@@ -5,9 +5,9 @@ using Microsoft.ML.Trainers;
 
 namespace MovieRecommender
 {
-    class Program
+    class ProgramMovieRating
     {
-        static void Main(string[] args)
+        public static void Main2(string[] args)
         {
             MLContext mlContext = new MLContext();
 
@@ -20,7 +20,6 @@ namespace MovieRecommender
             UseModelForSinglePrediction(mlContext, model);
 
             SaveModel(mlContext, trainingDataView.Schema, model);
-
         }
 
         public static (IDataView training, IDataView test) LoadData(MLContext mlContext)
@@ -73,11 +72,9 @@ namespace MovieRecommender
             Console.WriteLine("=============== Making a prediction ===============");
             var predictionEngine = mlContext.Model.CreatePredictionEngine<MovieRating, MovieRatingPrediction>(model);
 
-            var testInput = new MovieRating { userId = 611, movieId = 2 };
+            var testInput = new MovieRating { userId = 6, movieId = 10 };
 
             var movieRatingPrediction = predictionEngine.Predict(testInput);
-
-            Console.WriteLine("Movie rating for user: " + Math.Round(movieRatingPrediction.Score, 1));
 
             if (Math.Round(movieRatingPrediction.Score, 1) > 3.5)
             {
