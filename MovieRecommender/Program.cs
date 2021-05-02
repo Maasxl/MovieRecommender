@@ -26,11 +26,11 @@ namespace MovieRecommender
         public static (IDataView training, IDataView test) LoadData(MLContext mlContext)
         {
             // Should be replaced with get requests for the prepared ml/ai data
-            var trainingDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "recommendation-ratings-train.csv");
-            var testDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "recommendation-ratings-test.csv");
+            var trainingDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "mockdata.csv");
+            var testDataPath = Path.Combine(Environment.CurrentDirectory, "Data", "mockdata-test.csv");
 
-            IDataView trainingDataView = mlContext.Data.LoadFromTextFile<MovieRating>(trainingDataPath, hasHeader: true, separatorChar: ',');
-            IDataView testDataView = mlContext.Data.LoadFromTextFile<MovieRating>(testDataPath, hasHeader: true, separatorChar: ',');
+            IDataView trainingDataView = mlContext.Data.LoadFromTextFile<CampsiteRating>(trainingDataPath, hasHeader: true, separatorChar: ',');
+            IDataView testDataView = mlContext.Data.LoadFromTextFile<CampsiteRating>(testDataPath, hasHeader: true, separatorChar: ',');
 
             return (trainingDataView, testDataView);
         }
@@ -38,12 +38,12 @@ namespace MovieRecommender
         public static ITransformer BuildAndTrainModel(MLContext mlContext, IDataView trainingDataView)
         {
             IEstimator<ITransformer> estimator = mlContext.Transforms.Conversion.MapValueToKey(outputColumnName: "userIdEncoded", inputColumnName: "userId")
-            .Append(mlContext.Transforms.Conversion.MapValueToKey(outputColumnName: "movieIdEncoded", inputColumnName: "movieId"));
+            .Append(mlContext.Transforms.Conversion.MapValueToKey(outputColumnName: "campsiteIdEncoded", inputColumnName: "campsiteId"));
 
             var options = new MatrixFactorizationTrainer.Options
             {
                 MatrixColumnIndexColumnName = "userIdEncoded",
-                MatrixRowIndexColumnName = "movieIdEncoded",
+                MatrixRowIndexColumnName = "campsiteIdEncoded",
                 LabelColumnName = "Label",
                 NumberOfIterations = 20,
                 ApproximationRank = 100
@@ -71,21 +71,21 @@ namespace MovieRecommender
         public static void UseModelForSinglePrediction(MLContext mlContext, ITransformer model)
         {
             Console.WriteLine("=============== Making a prediction ===============");
-            var predictionEngine = mlContext.Model.CreatePredictionEngine<MovieRating, MovieRatingPrediction>(model);
+            var predictionEngine = mlContext.Model.CreatePredictionEngine<CampsiteRating, CampsiteRatingPrediciton>(model);
 
-            var testInput = new MovieRating { userId = 611, movieId = 2 };
+            var testInput = new CampsiteRating { userId = 6, campsiteId = 100006 };
 
-            var movieRatingPrediction = predictionEngine.Predict(testInput);
+            var ratingPrediction = predictionEngine.Predict(testInput);
 
-            Console.WriteLine("Movie rating for user: " + Math.Round(movieRatingPrediction.Score, 1));
+            Console.WriteLine("Movie rating for user: " + Math.Round(ratingPrediction.Score, 1));
 
-            if (Math.Round(movieRatingPrediction.Score, 1) > 3.5)
+            if (Math.Round(ratingPrediction.Score, 1) > 3.5)
             {
-                Console.WriteLine("Movie " + testInput.movieId + " is recommended for user " + testInput.userId);
+                Console.WriteLine("Campsite " + testInput.campsiteId + " is recommended for user " + testInput.userId);
             }
             else
             {
-                Console.WriteLine("Movie " + testInput.movieId + " is not recommended for user " + testInput.userId);
+                Console.WriteLine("Campsite " + testInput.campsiteId + " is not recommended for user " + testInput.userId);
             }
         }
 
