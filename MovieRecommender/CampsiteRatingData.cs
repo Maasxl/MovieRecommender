@@ -8,7 +8,7 @@ namespace MovieRecommender
     public class CampsiteRating
     {
         [LoadColumn(0)]
-        public float userId;
+        public string userId;
         [LoadColumn(1)]
         public float campsiteId;
         [LoadColumn(2)]

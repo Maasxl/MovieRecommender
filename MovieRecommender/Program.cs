@@ -73,7 +73,7 @@ namespace MovieRecommender
             Console.WriteLine("=============== Making a prediction ===============");
             var predictionEngine = mlContext.Model.CreatePredictionEngine<CampsiteRating, CampsiteRatingPrediciton>(model);
 
-            var testInput = new CampsiteRating { userId = 6, campsiteId = 100006 };
+            var testInput = new CampsiteRating { userId = "6", campsiteId = 100006 };
 
             var ratingPrediction = predictionEngine.Predict(testInput);
 
@@ -91,7 +91,7 @@ namespace MovieRecommender
 
         public static void SaveModel(MLContext mlContext, DataViewSchema trainingDataViewSchema, ITransformer model)
         {
-            var modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "MovieRecommenderModel.zip");
+            var modelPath = Path.Combine(Environment.CurrentDirectory, "Data", "CampsiteRecommenderModel.zip");
 
             Console.WriteLine("=============== Saving the model to a file ===============");
             mlContext.Model.Save(model, trainingDataViewSchema, modelPath);
