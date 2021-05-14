@@ -77,7 +77,7 @@ namespace MovieRecommender
 
             var ratingPrediction = predictionEngine.Predict(testInput);
 
-            Console.WriteLine("Movie rating for user: " + Math.Round(ratingPrediction.Score, 1));
+            Console.WriteLine("campsite rating for user: " + Math.Round(ratingPrediction.Score, 1));
 
             if (Math.Round(ratingPrediction.Score, 1) > 3.5)
             {
